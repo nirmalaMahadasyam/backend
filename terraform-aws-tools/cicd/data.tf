@@ -1,7 +1,7 @@
 data "aws_ami" "ami_info" {
 
     most_recent = true
-    owners = ["679593333241"]
+    owners = ["851725509871"]
 
     filter {
         name   = "name"
@@ -22,7 +22,7 @@ data "aws_ami" "ami_info" {
 data "aws_ami" "nexus_ami_info" {
 
     most_recent = true
-    owners = ["679593333241"]
+    owners = ["851725509871"]
 
     filter {
         name   = "name"
