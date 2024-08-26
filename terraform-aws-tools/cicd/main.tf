@@ -4,9 +4,20 @@ resource "aws_instance" "jenkins" {
     ami = "ami-041e2ea9402c46c32"  
     vpc_security_group_ids = [aws_security_group.allow_ssh.id]
     instance_type = "t3.micro"
-
+user_data = file("jenkins.sh")
     tags = {
         Name = "jenkins"
+    }
+}
+
+resource "aws_instance" "jenkins_agent" {
+
+    ami = "ami-041e2ea9402c46c32"  
+    vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+    instance_type = "t3.micro"
+ user_data = file("jenkins-agent.sh")
+    tags = {
+        Name = "jenkins_agent"
     }
 }
 
@@ -15,8 +26,8 @@ resource "aws_security_group" "allow_ssh" {
     description = "allowing SSH access"
 
     ingress {
-        from_port        = 22
-        to_port          = 22
+        from_port        = 8080
+        to_port          = 8080
         protocol         = "tcp"
         cidr_blocks      = ["0.0.0.0/0"]
     }
@@ -108,7 +119,8 @@ module "records" {
       type    = "A"
       ttl     = 1
       records = [
-        module.jenkins.public_ip
+        aws_instance.jenkins.public_ip
+        //module.jenkins.public_ip
       ]
       allow_overwrite = true
     },
@@ -117,20 +129,21 @@ module "records" {
       type    = "A"
       ttl     = 1
       records = [
-        module.jenkins_agent.private_ip
-      ]
-      allow_overwrite = true
-    },
-    {
-      name    = "nexus"
-      type    = "A"
-      ttl     = 1
-      allow_overwrite = true
-      records = [
-        module.nexus.private_ip
+        //module.jenkins_agent.private_ip
+        aws_instance.jenkins_agent.private_ip
       ]
       allow_overwrite = true
     }
+    # {
+    #   name    = "nexus"
+    #   type    = "A"
+    #   ttl     = 1
+    #   allow_overwrite = true
+    #   records = [
+    #     module.nexus.private_ip
+    #   ]
+    #   allow_overwrite = true
+    # }
   ]
 
 }
