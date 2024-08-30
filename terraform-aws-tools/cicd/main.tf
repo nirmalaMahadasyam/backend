@@ -5,7 +5,7 @@ module "jenkins" {
 
   instance_type          = "t3.small"
   vpc_security_group_ids = ["sg-0023be3b9dcdb312d"] #replace your SG
-  subnet_id = "subnet-0b80f31d378459702" #replace your Subnet
+  subnet_id = "subnet-0b80f31d378459702" #replace your Subnet(us-east1a)
   ami = data.aws_ami.ami_info.id
   #ami="ami-041e2ea9402c46c32"
   user_data = file("jenkins.sh")
@@ -30,36 +30,36 @@ module "jenkins_agent" {
     Name = "jenkins-agent"
   }
 }
+#.............. for Nexus.....................
+resource "aws_key_pair" "tools" {
+  key_name   = "tools"
+  # you can paste the public key directly like this
+  #public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL6ONJth+DzeXbU3oGATxjVmoRjPepdl7sBuPzzQT2Nc sivak@BOOK-I6CR3LQ85Q"
+  public_key = file("~/.ssh/tools.pub")
+  # ~ means windows home directory
+}
 
-# resource "aws_key_pair" "tools" {
-#   key_name   = "tools"
-#   # you can paste the public key directly like this
-#   #public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL6ONJth+DzeXbU3oGATxjVmoRjPepdl7sBuPzzQT2Nc sivak@BOOK-I6CR3LQ85Q"
-#   public_key = file("~/.ssh/tools.pub")
-#   # ~ means windows home directory
-# }
+module "nexus" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
 
-# module "nexus" {
-#   source  = "terraform-aws-modules/ec2-instance/aws"
+  name = "nexus"
 
-#   name = "nexus"
-
-#   instance_type          = "t3.medium"
-#   vpc_security_group_ids = ["sg-0fea5e49e962e81c9"]
-#   # convert StringList to list and get first element
-#   subnet_id = "subnet-0ea509ad4cba242d7"
-#   ami = data.aws_ami.nexus_ami_info.id
-#   key_name = aws_key_pair.tools.key_name
-#   root_block_device = [
-#     {
-#       volume_type = "gp3"
-#       volume_size = 30
-#     }
-#   ]
-#   tags = {
-#     Name = "nexus"
-#   }
-# }
+  instance_type          = "t3.medium"
+  vpc_security_group_ids = ["sg-0fea5e49e962e81c9"]
+  # convert StringList to list and get first element
+  subnet_id = "subnet-0ea509ad4cba242d7"
+  ami = data.aws_ami.nexus_ami_info.id
+  key_name = aws_key_pair.tools.key_name
+  root_block_device = [
+    {
+      volume_type = "gp3"
+      volume_size = 30
+    }
+  ]
+  tags = {
+    Name = "nexus"
+  }
+}
 
 module "records" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
@@ -85,18 +85,17 @@ module "records" {
         module.jenkins_agent.private_ip
       ]
       allow_overwrite = true
+    },
+    {
+      name    = "nexus"
+      type    = "A"
+      ttl     = 1
+      allow_overwrite = true
+      records = [
+        module.nexus.private_ip
+      ]
+      allow_overwrite = true
     }
-    # ,
-    # {
-    #   name    = "nexus"
-    #   type    = "A"
-    #   ttl     = 1
-    #   allow_overwrite = true
-    #   records = [
-    #     module.nexus.private_ip
-    #   ]
-    #   allow_overwrite = true
-    # }
   ]
 
 }

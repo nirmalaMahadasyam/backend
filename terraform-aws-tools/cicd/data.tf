@@ -2,7 +2,7 @@ data "aws_ami" "ami_info" {
 
     most_recent = true
     #owners = ["851725509871"]
-    owners = ["973714476881"]
+    owners = ["973714476881"]  # change1: amiid should be change
 
     filter {
         name   = "name"
@@ -20,23 +20,23 @@ data "aws_ami" "ami_info" {
     }
 }
 
-# data "aws_ami" "nexus_ami_info" {
+data "aws_ami" "nexus_ami_info" {
 
-#     most_recent = true
-#     owners = ["851725509871"]
+    most_recent = true
+    owners = ["851725509871"]
 
-#     filter {
-#         name   = "name"
-#         values = ["SolveDevOps-Nexus-Server-Ubuntu20.04-20240511-*"]
-#     }
+    filter {
+        name   = "name"
+        values = ["SolveDevOps-Nexus-Server-Ubuntu20.04-20240511-*"]
+    }
 
-#     filter {
-#         name   = "root-device-type"
-#         values = ["ebs"]
-#     }
+    filter {
+        name   = "root-device-type"
+        values = ["ebs"]
+    }
 
-#     filter {
-#         name   = "virtualization-type"
-#         values = ["hvm"]
-#     }
-# }
+    filter {
+        name   = "virtualization-type"
+        values = ["hvm"]
+    }
+}
