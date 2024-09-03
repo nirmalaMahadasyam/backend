@@ -1,8 +1,8 @@
 data "aws_ami" "ami_info" {
 
     most_recent = true
-    owners = ["851725509871"]
-    #owners = ["973714476881"]  # change1: amiid should be change
+    #owners = ["851725509871"]
+    owners = ["973714476881"]  # change1: amiid should be change 973714476881
 
     filter {
         name   = "name"
@@ -23,8 +23,8 @@ data "aws_ami" "ami_info" {
 data "aws_ami" "nexus_ami_info" {
 
     most_recent = true
-    owners = ["851725509871"]
-   // owners = ["679593333241"]
+    //owners = ["851725509871"]
+    owners = ["679593333241"]
 
 
     filter {
