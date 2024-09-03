@@ -35,7 +35,9 @@ resource "aws_key_pair" "tools" {
   key_name   = "tools"
   # you can paste the public key directly like this
   #public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL6ONJth+DzeXbU3oGATxjVmoRjPepdl7sBuPzzQT2Nc sivak@BOOK-I6CR3LQ85Q"
-  public_key = file("~/.ssh/tools.pub")
+  #public_key = file("~/.ssh/tools.pub")
+  public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPaEVY4ncZQ6kLaH5N+mRns5cS9e4j+XNQEMyWMNLPTH DELL@DESKTOP-5CKL54M"
+# #   #public_key = file("~/.ssh/nirmaladevops.pub")
   # ~ means windows home directory
 }
 
